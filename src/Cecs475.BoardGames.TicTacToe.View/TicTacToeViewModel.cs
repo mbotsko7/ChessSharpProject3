@@ -88,9 +88,9 @@ namespace Cecs475.BoardGames.TicTacToe.View {
 
 		private void RebindState() {
 			PossibleMoves = new HashSet<BoardPosition>(
-							from TicTacToeMove m in mBoard.GetPossibleMoves()
-							select m.Position
-						);
+				from TicTacToeMove m in mBoard.GetPossibleMoves()
+				select m.Position
+			);
 			var newSquares =
 				from r in Enumerable.Range(0, 3)
 				from c in Enumerable.Range(0, 3)
@@ -104,6 +104,10 @@ namespace Cecs475.BoardGames.TicTacToe.View {
 			OnPropertyChanged(nameof(BoardValue));
 			OnPropertyChanged(nameof(CurrentPlayer));
 			OnPropertyChanged(nameof(CanUndo));
+
+			if (PossibleMoves.Count == 0) {
+				GameFinished?.Invoke(this, new EventArgs());
+			}
 		}
 
 		public ObservableCollection<TicTacToeSquare> Squares {

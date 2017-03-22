@@ -65,26 +65,31 @@ namespace Cecs475.BoardGames.Othello.View {
 		}
 
 		public void ApplyMove(BoardPosition position) {
-			var possMoves = mBoard.GetPossibleMoves() as IEnumerable<OthelloMove>;
-			foreach (var move in possMoves) {
-				if (move.Position.Equals(position)) {
-					mBoard.ApplyMove(move);
-					break;
-				}
+			if (mBoard.PassCount == 2) {
+				GameFinished?.Invoke(this, new EventArgs());
 			}
+			else {
+				var possMoves = mBoard.GetPossibleMoves() as IEnumerable<OthelloMove>;
+				foreach (var move in possMoves) {
+					if (move.Position.Equals(position)) {
+						mBoard.ApplyMove(move);
+						break;
+					}
+				}
 
-			PossibleMoves = new HashSet<BoardPosition>(
-				from OthelloMove m in mBoard.GetPossibleMoves()
-				select m.Position
-			);
-			var newSquares =
-				from r in Enumerable.Range(0, 8)
-				from c in Enumerable.Range(0, 8)
-				select new BoardPosition(r, c);
-			int i = 0;
-			foreach (var pos in newSquares) {
-				mSquares[i].Player = mBoard.GetPieceAtPosition(pos);
-				i++;
+				PossibleMoves = new HashSet<BoardPosition>(
+					from OthelloMove m in mBoard.GetPossibleMoves()
+					select m.Position
+				);
+				var newSquares =
+					from r in Enumerable.Range(0, 8)
+					from c in Enumerable.Range(0, 8)
+					select new BoardPosition(r, c);
+				int i = 0;
+				foreach (var pos in newSquares) {
+					mSquares[i].Player = mBoard.GetPieceAtPosition(pos);
+					i++;
+				}
 			}
 			OnPropertyChanged(nameof(BoardValue));
 			OnPropertyChanged(nameof(CurrentPlayer));

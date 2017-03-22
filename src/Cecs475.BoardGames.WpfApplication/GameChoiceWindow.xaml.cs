@@ -30,8 +30,8 @@ namespace Cecs475.BoardGames.WpfApplication {
 				Title = gameType.GameName
 			};
 			gameWindow.Closed += GameWindow_Closed;
-
 			gameWindow.Show();
+
 			this.Hide();
 		}
 
