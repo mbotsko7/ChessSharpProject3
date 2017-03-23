@@ -31,13 +31,14 @@ namespace Cecs475.BoardGames.Othello.View {
 			var square = b.DataContext as OthelloSquare;
 			var vm = FindResource("vm") as OthelloViewModel;
 			if (vm.PossibleMoves.Contains(square.Position)) {
-				b.Background = RED_BRUSH;
+				square.IsHovered = true;
 			}
 		}
 
 		private void Border_MouseLeave(object sender, MouseEventArgs e) {
 			Border b = sender as Border;
-			b.Background = GREEN_BRUSH;
+			var square = b.DataContext as OthelloSquare;
+			square.IsHovered = false;
 		}
 
 		public OthelloViewModel Model {
@@ -50,7 +51,7 @@ namespace Cecs475.BoardGames.Othello.View {
 			var vm = FindResource("vm") as OthelloViewModel;
 			if (vm.PossibleMoves.Contains(square.Position)) {
 				vm.ApplyMove(square.Position);
-				b.Background = GREEN_BRUSH;
+				square.IsHovered = false;
 			}
 		}
 	}

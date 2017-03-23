@@ -19,6 +19,17 @@ namespace Cecs475.BoardGames.Othello.View {
 			}
 		}
 
+		private bool mIsHovered;
+		public bool IsHovered {
+			get { return mIsHovered; }
+			set {
+				if (value != mIsHovered) {
+					mIsHovered = value;
+					OnPropertyChanged(nameof(IsHovered));
+				}
+			}
+		}
+
 		public BoardPosition Position {
 			get; set;
 		}

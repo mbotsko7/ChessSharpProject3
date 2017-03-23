@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="OthelloCurrentPlayerConverter.cs" />
     <Compile Include="OthelloGameType.cs" />
+    <Compile Include="OthelloSquareColorConverter.cs" />
     <Compile Include="OthelloValueConverter.cs" />
     <Compile Include="OthelloView.xaml.cs">
       <DependentUpon>OthelloView.xaml</DependentUpon>

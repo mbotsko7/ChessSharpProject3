@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Cecs475.BoardGames.Othello.View"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="400">
+             MinHeight="400" MinWidth="400">
     <UserControl.Resources>
         <!-- 
         The ViewModel contains the reference to the OthelloBoard object and makes its properties
@@ -14,6 +14,7 @@
         <local:OthelloViewModel x:Key="vm"/>
         <!-- This converter will convert from an int to a colored circle. -->
         <local:OthelloSquarePlayerConverter x:Key="PlayerColor"/>
+        <local:OthelloSquareColorConverter x:Key="SquareColor"/>
     </UserControl.Resources>
     <!-- 
     An ItemsControl is basically a "repeater": for each element in a collection that is its ItemSource,
@@ -41,9 +42,16 @@
                 This control is created for each element in the ItemSource. 
                 A Border control draws a border around whatever control it contains.
                 -->
-                <Border BorderThickness="1" BorderBrush="Black" Background="Green"
+                <Border BorderThickness="1" BorderBrush="Black"
                         MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave"
                         MouseUp="Border_MouseUp">
+                    <!-- Border's Background depends on the square's position and hover status. -->
+                    <Border.Background >
+                        <MultiBinding Converter="{StaticResource SquareColor}">
+                            <Binding Path="Position"/>
+                            <Binding Path="IsHovered"/>
+                        </MultiBinding>
+                    </Border.Background>
                     <!-- 
                     A ContentControl is just a placeholder that gets replaced by its Content. 
                     We use it here because it can Bind to the Player property of an OthelloSquare object,
