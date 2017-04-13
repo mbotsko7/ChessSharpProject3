@@ -7,6 +7,7 @@
         xmlns:view="clr-namespace:Cecs475.BoardGames.View;assembly=Cecs475.BoardGames.View"
         xmlns:othello="clr-namespace:Cecs475.BoardGames.Othello.View;assembly=Cecs475.BoardGames.Othello.View"
         xmlns:tictactoe="clr-namespace:Cecs475.BoardGames.TicTacToe.View;assembly=Cecs475.BoardGames.TicTacToe.View"
+        xmlns:chess="clr-namespace:Cecs475.BoardGames.Chess.View;assembly=Cecs475.BoardGames.Chess.View"
         mc:Ignorable="d"
         Title="Let's play a game!" Width="300" FontSize="16"
         SizeToContent="Height" WindowStartupLocation="CenterScreen">
@@ -14,6 +15,7 @@
         <x:Array x:Key="GameTypes" Type="{x:Type view:IGameType}">
             <othello:OthelloGameType />
             <tictactoe:TicTacToeGameType />
+            <chess:ChessGameType/>
         </x:Array>
     </Window.Resources>
     <StackPanel>

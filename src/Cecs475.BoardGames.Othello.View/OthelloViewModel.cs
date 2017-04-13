@@ -118,8 +118,7 @@ namespace Cecs475.BoardGames.Othello.View {
 		public int BoardValue { get { return mBoard.Value; } }
 
 		public int CurrentPlayer { get { return mBoard.CurrentPlayer; } }
-
-
+        
 		public bool CanUndo {
 			get {
 				return mBoard.MoveHistory.Count > 0;
