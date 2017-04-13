@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8D39170D-A98B-4F68-998B-EEAC69A61414}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cecs475.BoardGames.WpfApplication</RootNamespace>
-    <AssemblyName>Cecs475.BoardGames.WpfApplication</AssemblyName>
+    <ProjectGuid>{39B6019F-53DB-4EF9-AA7D-1128D7D90C8B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Cecs475.BoardGames.Chess.View</RootNamespace>
+    <AssemblyName>Cecs475.BoardGames.Chess.View</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,9 +33,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -51,31 +55,26 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="GameChoiceWindow.xaml">
+    <Page Include="ChessView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="ChessGameType.cs" />
+    <Compile Include="ChessSquareColorConverter.cs" />
+    <Compile Include="ChessView.xaml.cs">
+      <DependentUpon>ChessView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChessViewModel.cs" />
+    <Page Include="PawnPromotionDialog.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameChoiceWindow.xaml.cs">
-      <DependentUpon>GameChoiceWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PawnPromotionDialog.xaml.cs">
+      <DependentUpon>PawnPromotionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,7 +96,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -107,41 +105,28 @@
       <Project>{6593dda6-b856-407a-94c1-1cd5d03eee36}</Project>
       <Name>Cecs475.BoardGames.Chess.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Chess.View\Cecs475.BoardGames.Chess.View.csproj">
-      <Project>{39b6019f-53db-4ef9-aa7d-1128d7d90c8b}</Project>
-      <Name>Cecs475.BoardGames.Chess.View</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cecs475.BoardGames.Model\Cecs475.BoardGames.Model.csproj">
       <Project>{e30836fa-92e0-4787-9237-dc750c339fb9}</Project>
       <Name>Cecs475.BoardGames.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Othello.Model\Cecs475.BoardGames.Othello.Model.csproj">
-      <Project>{0f091fc9-c780-4a88-bc3a-ef52c8a023b4}</Project>
-      <Name>Cecs475.BoardGames.Othello.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Othello.View\Cecs475.BoardGames.Othello.View.csproj">
-      <Project>{103ea8f6-8a13-4f8c-8747-92c86f3759b0}</Project>
-      <Name>Cecs475.BoardGames.Othello.View</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.TicTacToe.Model\Cecs475.BoardGames.TicTacToe.Model.csproj">
-      <Project>{86d454b1-0ef0-4ed3-8f5b-f6c139d52a9c}</Project>
-      <Name>Cecs475.BoardGames.TicTacToe.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.TicTacToe.View\Cecs475.BoardGames.TicTacToe.View.csproj">
-      <Project>{8b69e987-cc12-47cf-82b0-87d608aa69f3}</Project>
-      <Name>Cecs475.BoardGames.TicTacToe.View</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cecs475.BoardGames.View\Cecs475.BoardGames.View.csproj">
-      <Project>{0D64FDCE-18D4-41CF-BBF8-ACF449086045}</Project>
+      <Project>{0d64fdce-18d4-41cf-bbf8-acf449086045}</Project>
       <Name>Cecs475.BoardGames.View</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\blackbishop.png" />
+    <Resource Include="Resources\blackking.png" />
+    <Resource Include="Resources\blackknight.png" />
+    <Resource Include="Resources\blackpawn.png" />
+    <Resource Include="Resources\blackqueen.png" />
+    <Resource Include="Resources\blackrook.png" />
+    <Resource Include="Resources\whitebishop.png" />
+    <Resource Include="Resources\whiteking.png" />
+    <Resource Include="Resources\whiteknight.png" />
+    <Resource Include="Resources\whitepawn.png" />
+    <Resource Include="Resources\whitequeen.png" />
+    <Resource Include="Resources\whiterook.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
