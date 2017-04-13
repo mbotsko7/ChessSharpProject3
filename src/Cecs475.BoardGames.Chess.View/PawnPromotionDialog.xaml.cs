@@ -39,22 +39,28 @@ namespace Cecs475.BoardGames.Chess.View {
             if (button == null)
                 return;
 
-            Piece = button.Content as string;
+            Piece = button.Name;
             Close();
         }
 
         private void Button_OnEnter(object sender, MouseEventArgs e) {
             var button = (Button) sender;
+            var color = _model.CurrentPlayer == 1 ? "white" : "black";
+            var piece = button.Name.ToLower();
 
-            button.Background = _model.CurrentPlayer == 1 ? WhiteBrush : BlackBrush;
-            button.Foreground = _model.CurrentPlayer == 1 ? BlackBrush : WhiteBrush;
+            // Image / text
+            ((Image) ((Grid) button.Content).Children[0]).Source = new BitmapImage(new Uri(
+                "pack://application:,,,/Cecs475.BoardGames.Chess.View;component/Resources/" +
+                color + piece + ".png"));
+            ((Label) ((Grid) button.Content).Children[1]).Content = "";
         }
 
         private void Button_OnLeave(object sender, MouseEventArgs e) {
             var button = (Button) sender;
 
-            button.Background = DefaultBrush;
-            button.Foreground = BlackBrush;
+            // Image / text
+            ((Image) ((Grid) button.Content).Children[0]).Source = null;
+            ((Label) ((Grid) button.Content).Children[1]).Content = button.Name;
         }
     }
 }

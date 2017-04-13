@@ -7,10 +7,10 @@ using System.Windows.Media;
 namespace Cecs475.BoardGames.Chess.View {
     class ChessSquareColorConverter : IMultiValueConverter {
         private static readonly SolidColorBrush DarkBrush = new SolidColorBrush(Colors.DarkSeaGreen);
-        private static readonly SolidColorBrush LightBrush = new SolidColorBrush(Colors.PeachPuff);
+        private static readonly SolidColorBrush LightBrush = new SolidColorBrush(Colors.AntiqueWhite);
         private static readonly SolidColorBrush HoveredBrush = new SolidColorBrush(Colors.DarkOliveGreen);
         private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Colors.Salmon);
-        private static readonly SolidColorBrush CheckBrush = new SolidColorBrush(Colors.Yellow);
+        private static readonly SolidColorBrush CheckBrush = new SolidColorBrush(Colors.Gold);
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             var pos = (BoardPosition) values[0];
@@ -21,7 +21,7 @@ namespace Cecs475.BoardGames.Chess.View {
 
             // If the king is in trouble, highlight it
             if (isInCheck)
-                return CheckBrush;
+                return isSelected ? SelectedBrush : CheckBrush;
 
             // If it's selected, highlight it
             if (isSelected) 

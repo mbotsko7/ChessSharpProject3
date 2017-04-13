@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -61,6 +62,11 @@ namespace Cecs475.BoardGames.Chess.View {
 
             foreach (var chessSquare in Squares) {
                 chessSquare.Piece = _board.GetPieceAtPosition(chessSquare.Position);
+                if (_board.IsCheck && chessSquare.Piece.Player == CurrentPlayer &&
+                    chessSquare.Piece.PieceType == ChessPieceType.King)
+                    chessSquare.IsInCheck = true;
+                else if (!_board.IsCheck)
+                    chessSquare.IsInCheck = false;
             }
 
             OnPropertyChanged(nameof(BoardValue));
@@ -99,6 +105,8 @@ namespace Cecs475.BoardGames.Chess.View {
                 if (_board.IsCheck && chessSquare.Piece.Player == CurrentPlayer &&
                     chessSquare.Piece.PieceType == ChessPieceType.King)
                     chessSquare.IsInCheck = true;
+                else if (!_board.IsCheck)
+                    chessSquare.IsInCheck = false;
             }
 
             OnPropertyChanged(nameof(BoardValue));
