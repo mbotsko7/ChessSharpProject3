@@ -1,4 +1,5 @@
 ﻿using Cecs475.BoardGames;
+using Cecs475.BoardGames.ComputerOpponent;
 using Cecs475.BoardGames.TicTacToe.Model;
 using Cecs475.BoardGames.View;
 using System;
@@ -14,195 +15,248 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Cecs475.BoardGames.TicTacToe.View {
-	public class TicTacToeSquare : INotifyPropertyChanged {
-		private int mPlayer;
-		public int Player {
-			get { return mPlayer; }
-			set {
-				if (value != mPlayer) {
-					mPlayer = value;
-					OnPropertyChanged(nameof(Player));
-				}
-			}
-		}
+namespace Cecs475.BoardGames.TicTacToe.View
+{
+    public class TicTacToeSquare : INotifyPropertyChanged
+    {
+        private int mPlayer;
+        public int Player
+        {
+            get { return mPlayer; }
+            set
+            {
+                if (value != mPlayer)
+                {
+                    mPlayer = value;
+                    OnPropertyChanged(nameof(Player));
+                }
+            }
+        }
 
-		public BoardPosition Position {
-			get; set;
-		}
+        public BoardPosition Position
+        {
+            get; set;
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged(string name) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
-	}
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+    }
 
-	public class TicTacToeViewModel : IGameViewModel, INotifyPropertyChanged {
-		private TicTacToeBoard mBoard;
-		private ObservableCollection<TicTacToeSquare> mSquares;
+    public class TicTacToeViewModel : IGameViewModel, INotifyPropertyChanged
+    {
+        private TicTacToeBoard mBoard;
+        private ObservableCollection<TicTacToeSquare> mSquares;
+        private IGameAi mGameAi = new MinimaxAi(8);
 
-		public event EventHandler GameFinished;
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler GameFinished;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		private void OnPropertyChanged(string name) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
+        private void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
-		public TicTacToeViewModel() {
-			mBoard = new TicTacToeBoard();
-			mSquares = new ObservableCollection<TicTacToeSquare>(
-				from pos in (
-					from r in Enumerable.Range(0, 3)
-					from c in Enumerable.Range(0, 3)
-					select new BoardPosition(r, c)
-				)
-				select new TicTacToeSquare() {
-					Position = pos,
-					Player = mBoard.GetPieceAtPosition(pos)
-				}
-			);
+        public TicTacToeViewModel()
+        {
+            mBoard = new TicTacToeBoard();
+            mSquares = new ObservableCollection<TicTacToeSquare>(
+                from pos in (
+                    from r in Enumerable.Range(0, 3)
+                    from c in Enumerable.Range(0, 3)
+                    select new BoardPosition(r, c)
+                )
+                select new TicTacToeSquare()
+                {
+                    Position = pos,
+                    Player = mBoard.GetPieceAtPosition(pos)
+                }
+            );
 
-			PossibleMoves = new HashSet<BoardPosition>(
-				from TicTacToeMove m in mBoard.GetPossibleMoves()
-				select m.Position
-			);
-		}
+            PossibleMoves = new HashSet<BoardPosition>(
+                from TicTacToeMove m in mBoard.GetPossibleMoves()
+                select m.Position
+            );
+        }
 
 
-		public void UndoMove() {
-			mBoard.UndoLastMove();
-			RebindState();
-		}
+        public void UndoMove()
+        {
+            mBoard.UndoLastMove();
+            if (Players == NumberOfPlayers.One)
+            {
+                mBoard.UndoLastMove();
+            }
+            RebindState();
+        }
 
-		public void ApplyMove(BoardPosition position) {
-			var possMoves = mBoard.GetPossibleMoves() as IEnumerable<TicTacToeMove>;
-			foreach (var move in possMoves) {
-				if (move.Position.Equals(position)) {
-					mBoard.ApplyMove(move);
-					break;
-				}
-			}
+        public void ApplyMove(BoardPosition position)
+        {
+            var possMoves = mBoard.GetPossibleMoves() as IEnumerable<TicTacToeMove>;
+            foreach (var move in possMoves)
+            {
+                if (move.Position.Equals(position))
+                {
+                    mBoard.ApplyMove(move);
+                    break;
+                }
+            }
 
-			RebindState();
-		}
+            if (Players == NumberOfPlayers.One && !mBoard.IsFinished)
+            {
+                var bestMove = mGameAi.FindBestMove(mBoard);
+                if (bestMove != null)
+                {
+                    mBoard.ApplyMove(bestMove);
+                }
+            }
 
-		private void RebindState() {
-			PossibleMoves = new HashSet<BoardPosition>(
-				from TicTacToeMove m in mBoard.GetPossibleMoves()
-				select m.Position
-			);
-			var newSquares =
-				from r in Enumerable.Range(0, 3)
-				from c in Enumerable.Range(0, 3)
-				select new BoardPosition(r, c);
-			int i = 0;
-			foreach (var pos in newSquares) {
-				mSquares[i].Player = mBoard.GetPieceAtPosition(pos);
-				i++;
-			}
+            RebindState();
+        }
 
-			OnPropertyChanged(nameof(BoardValue));
-			OnPropertyChanged(nameof(CurrentPlayer));
-			OnPropertyChanged(nameof(CanUndo));
+        private void RebindState()
+        {
+            PossibleMoves = new HashSet<BoardPosition>(
+                            from TicTacToeMove m in mBoard.GetPossibleMoves()
+                            select m.Position
+                        );
+            var newSquares =
+                from r in Enumerable.Range(0, 3)
+                from c in Enumerable.Range(0, 3)
+                select new BoardPosition(r, c);
+            int i = 0;
+            foreach (var pos in newSquares)
+            {
+                mSquares[i].Player = mBoard.GetPieceAtPosition(pos);
+                i++;
+            }
 
-			if (PossibleMoves.Count == 0) {
-				GameFinished?.Invoke(this, new EventArgs());
-			}
-		}
+            if (mBoard.IsFinished)
+            {
+                GameFinished?.Invoke(this, new EventArgs());
+            }
 
-		public ObservableCollection<TicTacToeSquare> Squares {
-			get { return mSquares; }
-		}
+            OnPropertyChanged(nameof(BoardValue));
+            OnPropertyChanged(nameof(CurrentPlayer));
+            OnPropertyChanged(nameof(CanUndo));
+        }
 
-		public HashSet<BoardPosition> PossibleMoves {
-			get; private set;
-		}
+        public ObservableCollection<TicTacToeSquare> Squares
+        {
+            get { return mSquares; }
+        }
 
-		public int BoardValue { get { return mBoard.Value; } }
+        public HashSet<BoardPosition> PossibleMoves
+        {
+            get; private set;
+        }
 
-		public int CurrentPlayer {
-			get {
-				return mBoard.CurrentPlayer;
-			}
-		}
+        public int BoardValue { get { return mBoard.Value; } }
 
-		public bool CanUndo {
-			get {
-				return mBoard.MoveHistory.Count > 0;
-			}
-		}
-	}
+        public int CurrentPlayer
+        {
+            get
+            {
+                return mBoard.CurrentPlayer;
+            }
+        }
 
-	/// <summary>
-	/// Converts from an integer player number to an Ellipse representing that player's token.
-	/// </summary>
-	public class TicTacToeSquarePlayerConverter : IValueConverter {
-		private static SolidColorBrush WHITE_BRUSH = new SolidColorBrush(Colors.White);
-		private static SolidColorBrush BLACK_BRUSH = new SolidColorBrush(Colors.Black);
+        public bool CanUndo
+        {
+            get
+            {
+                return mBoard.MoveHistory.Count > 0;
+            }
+        }
 
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-			int player = (int)value;
-			if (player == 0) {
-				return null;
-			}
-			if (player == 2) {
-				return new Ellipse() {
-					Stroke = BLACK_BRUSH,
-					StrokeThickness = 5,
-					Fill = null
-				};
-			}
-			Canvas c = new Canvas();
-			Line l1 = new Line() {
-				Stroke = BLACK_BRUSH,
-				StrokeThickness = 5
-			};
-			l1.SetBinding(Line.X2Property,
-				new Binding("ActualWidth") {
-					Mode = BindingMode.OneWay,
-					RelativeSource = new RelativeSource(
-						RelativeSourceMode.FindAncestor, typeof(Border), 1)
-				}
-			);
-			l1.SetBinding(Line.Y2Property,
-				new Binding("ActualHeight") {
-					Mode = BindingMode.OneWay,
-					RelativeSource = new RelativeSource(
-						RelativeSourceMode.FindAncestor, typeof(Border), 1)
-				}
-			);
-			c.Children.Add(l1);
+        public NumberOfPlayers Players { get; set; }
+    }
 
-			Line l2 = new Line() {
-				Stroke = BLACK_BRUSH,
-				StrokeThickness = 5
-			};
-			l2.SetBinding(Line.X1Property,
-				new Binding("ActualWidth") {
-					Mode = BindingMode.OneWay,
-					RelativeSource = new RelativeSource(
-						RelativeSourceMode.FindAncestor, typeof(Border), 1)
-				}
-			);
-			l2.SetBinding(Line.Y2Property,
-				new Binding("ActualHeight") {
-					Mode = BindingMode.OneWay,
-					RelativeSource = new RelativeSource(
-						RelativeSourceMode.FindAncestor, typeof(Border), 1)
-				}
-			);
-			c.Children.Add(l2);
-			return c;
-		}
+    /// <summary>
+    /// Converts from an integer player number to an Ellipse representing that player's token.
+    /// </summary>
+    public class TicTacToeSquarePlayerConverter : IValueConverter
+    {
+        private static SolidColorBrush WHITE_BRUSH = new SolidColorBrush(Colors.White);
+        private static SolidColorBrush BLACK_BRUSH = new SolidColorBrush(Colors.Black);
 
-		private static SolidColorBrush GetFillBrush(int player) {
-			if (player == 1)
-				return BLACK_BRUSH;
-			return WHITE_BRUSH;
-		}
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int player = (int)value;
+            if (player == 0)
+            {
+                return null;
+            }
+            if (player == 2)
+            {
+                return new Ellipse()
+                {
+                    Stroke = BLACK_BRUSH,
+                    StrokeThickness = 5,
+                    Fill = null
+                };
+            }
+            Canvas c = new Canvas();
+            Line l1 = new Line()
+            {
+                Stroke = BLACK_BRUSH,
+                StrokeThickness = 5
+            };
+            l1.SetBinding(Line.X2Property,
+                new Binding("ActualWidth")
+                {
+                    Mode = BindingMode.OneWay,
+                    RelativeSource = new RelativeSource(
+                        RelativeSourceMode.FindAncestor, typeof(Border), 1)
+                }
+            );
+            l1.SetBinding(Line.Y2Property,
+                new Binding("ActualHeight")
+                {
+                    Mode = BindingMode.OneWay,
+                    RelativeSource = new RelativeSource(
+                        RelativeSourceMode.FindAncestor, typeof(Border), 1)
+                }
+            );
+            c.Children.Add(l1);
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-			throw new NotImplementedException();
-		}
-	}
+            Line l2 = new Line()
+            {
+                Stroke = BLACK_BRUSH,
+                StrokeThickness = 5
+            };
+            l2.SetBinding(Line.X1Property,
+                new Binding("ActualWidth")
+                {
+                    Mode = BindingMode.OneWay,
+                    RelativeSource = new RelativeSource(
+                        RelativeSourceMode.FindAncestor, typeof(Border), 1)
+                }
+            );
+            l2.SetBinding(Line.Y2Property,
+                new Binding("ActualHeight")
+                {
+                    Mode = BindingMode.OneWay,
+                    RelativeSource = new RelativeSource(
+                        RelativeSourceMode.FindAncestor, typeof(Border), 1)
+                }
+            );
+            c.Children.Add(l2);
+            return c;
+        }
+
+        private static SolidColorBrush GetFillBrush(int player)
+        {
+            if (player == 1)
+                return BLACK_BRUSH;
+            return WHITE_BRUSH;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

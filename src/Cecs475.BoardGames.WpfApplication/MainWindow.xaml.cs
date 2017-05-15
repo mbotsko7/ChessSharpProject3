@@ -19,8 +19,8 @@ namespace Cecs475.BoardGames.WpfApplication {
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
-		public MainWindow(IGameType gameType) {
-			var viewAndViewModel = gameType.CreateViewAndViewModel();
+		public MainWindow(IGameType gameType, NumberOfPlayers players) {
+			var viewAndViewModel = gameType.CreateViewAndViewModel(players);
 			this.Resources.Add("GameView", viewAndViewModel.Item1);
 			this.Resources.Add("ViewModel", viewAndViewModel.Item2);
 

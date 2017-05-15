@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8B69E987-CC12-47CF-82B0-87D608AA69F3}</ProjectGuid>
+    <ProjectGuid>{5768E013-CA15-4CF4-B0F8-7E6F48F50947}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cecs475.BoardGames.TicTacToe.View</RootNamespace>
-    <AssemblyName>Cecs475.BoardGames.TicTacToe.View</AssemblyName>
+    <RootNamespace>Cecs475.BoardGames.ComputerOpponent</RootNamespace>
+    <AssemblyName>Cecs475.BoardGames.ComputerOpponent</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,52 +31,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TicTacToeGameType.cs" />
+    <Compile Include="IGameAi.cs" />
+    <Compile Include="MinimaxAi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TicTacToePlayerConverter.cs" />
-    <Compile Include="TicTacToeValueConverter.cs" />
-    <Compile Include="TicTacToeView.xaml.cs">
-      <DependentUpon>TicTacToeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TicTacToeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cecs475.BoardGames.ComputerOpponent\Cecs475.BoardGames.ComputerOpponent.csproj">
-      <Project>{5768e013-ca15-4cf4-b0f8-7e6f48f50947}</Project>
-      <Name>Cecs475.BoardGames.ComputerOpponent</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cecs475.BoardGames.Model\Cecs475.BoardGames.Model.csproj">
-      <Project>{E30836FA-92E0-4787-9237-DC750C339FB9}</Project>
+      <Project>{e30836fa-92e0-4787-9237-dc750c339fb9}</Project>
       <Name>Cecs475.BoardGames.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.TicTacToe.Model\Cecs475.BoardGames.TicTacToe.Model.csproj">
-      <Project>{86D454B1-0EF0-4ED3-8F5B-F6C139D52A9C}</Project>
-      <Name>Cecs475.BoardGames.TicTacToe.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.View\Cecs475.BoardGames.View.csproj">
-      <Project>{0D64FDCE-18D4-41CF-BBF8-ACF449086045}</Project>
-      <Name>Cecs475.BoardGames.View</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="TicTacToeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

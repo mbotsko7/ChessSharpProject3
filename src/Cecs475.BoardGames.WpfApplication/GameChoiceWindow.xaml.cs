@@ -26,7 +26,8 @@ namespace Cecs475.BoardGames.WpfApplication {
 		private void Button_Click(object sender, RoutedEventArgs e) {
 			Button b = sender as Button;
 			IGameType gameType = b.DataContext as IGameType;
-			var gameWindow = new MainWindow(gameType) {
+			var gameWindow = new MainWindow(gameType,
+                mHumanBtn.IsChecked.Value ? NumberOfPlayers.Two : NumberOfPlayers.One) {
 				Title = gameType.GameName
 			};
 			gameWindow.Closed += GameWindow_Closed;

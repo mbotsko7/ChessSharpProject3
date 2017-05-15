@@ -41,6 +41,8 @@ namespace Cecs475.BoardGames.Chess.View {
 
         public int CurrentPlayer => _board.CurrentPlayer;
 
+        public NumberOfPlayers Players { get; set; }
+
         public bool HasSelected => Squares.Any(s => s.IsSelected);
         
         public ObservableCollection<ChessSquare> Squares { get; }
@@ -126,6 +128,8 @@ namespace Cecs475.BoardGames.Chess.View {
         private bool _isInCheck;
 
         public event PropertyChangedEventHandler PropertyChanged;
+       
+           
 
         public ChessPiecePosition Piece {
             get => _piece;
@@ -135,9 +139,11 @@ namespace Cecs475.BoardGames.Chess.View {
                 _piece = value;
                 OnPropertyChanged(nameof(Piece));
             }
-        }
+         }
 
-        public bool IsHovered {
+            
+
+    public bool IsHovered {
             get => _isHovered;
             set {
                 if (value == _isHovered) return;

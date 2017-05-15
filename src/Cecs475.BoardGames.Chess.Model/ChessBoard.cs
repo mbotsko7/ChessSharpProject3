@@ -21,9 +21,21 @@ namespace Cecs475.BoardGames.Chess {
             {2, 4, 5, 6, 7, 5, 4, 3}
         };
 
+        public bool IsFinished
+        {
+            get
+            {
+                return IsCheckmate || IsStalemate;
+            }
+        }
+
+        public int Weight
+        {
+            get; private set;
+        }
+
         // Game states
         public bool NeedToPawnPromote;
-
         private int _blackKingFirstMove;
         private int _whiteKingFirstMove;
         private int _blackRookKingFirstMove;
