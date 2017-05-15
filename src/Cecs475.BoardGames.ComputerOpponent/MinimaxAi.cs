@@ -33,8 +33,10 @@ namespace Cecs475.BoardGames.ComputerOpponent
             // TODO: call the private FindBestMove with appropriate values for the parameters.
             // mMaxDepth is what the depthLeft should start at.
             // You are maximizing iff the board's current player is 1.
-
-            return null;
+            
+            if(b.CurrentPlayer == 1)
+                return FindBestMove(b, 6, true).Move;
+            return FindBestMove(b, 6, false).Move;
         }
 
         private static MinimaxBestMove FindBestMove(IGameBoard b, int depthLeft, bool maximize)
@@ -43,7 +45,48 @@ namespace Cecs475.BoardGames.ComputerOpponent
             // Your first attempt will not use alpha-beta pruning. Once that works, 
             // implement the pruning as discussed in the project notes.
 
-            throw new NotImplementedException();
+            if (depthLeft == 0 || b.IsFinished)
+            {
+                MinimaxBestMove m = new MinimaxBestMove()
+                {
+                    Move = null,
+                    Weight = b.Weight
+                };
+                return m;
+            }
+            else
+            {
+                int bestWeight;
+                if (maximize)
+                    bestWeight = -999;
+                else
+                    bestWeight = 999;
+                IGameMove bestMove = null;
+                foreach(var m in b.GetPossibleMoves())
+                {
+                    b.ApplyMove(m);
+                    var w = FindBestMove(b, depthLeft - 1, !maximize);
+                    b.UndoLastMove();
+                    if(maximize && w.Weight > bestWeight)
+                    {
+                        bestWeight = w.Weight;
+                        bestMove = m;
+                    }
+                    else if(!maximize && w.Weight < bestWeight)
+                    {
+                        bestWeight = w.Weight;
+                        bestMove = m;
+                    }
+                    
+
+                }
+                MinimaxBestMove minimax = new MinimaxBestMove()
+                {
+                    Move = bestMove,
+                    Weight = bestWeight
+                };
+                return minimax;
+            }
         }
 
     }
