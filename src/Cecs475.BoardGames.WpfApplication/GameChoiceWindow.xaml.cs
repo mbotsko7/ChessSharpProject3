@@ -21,6 +21,37 @@ namespace Cecs475.BoardGames.WpfApplication {
 	public partial class GameChoiceWindow : Window {
 		public GameChoiceWindow() {
 			InitializeComponent();
+            Type gameType = typeof(IGameType);
+            //Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.Model.dll");
+            //Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.View.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.Model.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.View.dll");
+            //Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.Model.dll");
+            //Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.View.dll");
+            List<object> l = new List<object>();
+            var boardTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(t => gameType.IsAssignableFrom(t) && t.IsClass);
+            foreach(var val  in boardTypes)
+            {
+                l.Add(Activator.CreateInstance(val));
+            }
+            /*foreach(var assemble in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach(var t in assemble.GetTypes())
+                {
+                    if (gameType.IsAssignableFrom(t) && t != gameType)
+                    {
+
+                        //var construct = gameType.GetConstructors(BindingFlags.Public);
+                        //Type x = t.ReflectedType;
+                        var obj = Activator.CreateInstance(t);
+                        //var obj = construct[0].Invoke(new object[] { });
+                        l.Add(obj);
+                    }
+                }
+            }*/
+            Application.Current.Resources["ItemsSource"] = boardTypes;
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {

@@ -104,33 +104,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cecs475.BoardGames.Chess.Model\Cecs475.BoardGames.Chess.Model.csproj">
-      <Project>{6593dda6-b856-407a-94c1-1cd5d03eee36}</Project>
-      <Name>Cecs475.BoardGames.Chess.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Chess.View\Cecs475.BoardGames.Chess.View.csproj">
-      <Project>{39b6019f-53db-4ef9-aa7d-1128d7d90c8b}</Project>
-      <Name>Cecs475.BoardGames.Chess.View</Name>
+    <ProjectReference Include="..\Cecs475.BoardGames.ComputerOpponent\Cecs475.BoardGames.ComputerOpponent.csproj">
+      <Project>{5768e013-ca15-4cf4-b0f8-7e6f48f50947}</Project>
+      <Name>Cecs475.BoardGames.ComputerOpponent</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cecs475.BoardGames.Model\Cecs475.BoardGames.Model.csproj">
       <Project>{e30836fa-92e0-4787-9237-dc750c339fb9}</Project>
       <Name>Cecs475.BoardGames.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Othello.Model\Cecs475.BoardGames.Othello.Model.csproj">
-      <Project>{0f091fc9-c780-4a88-bc3a-ef52c8a023b4}</Project>
-      <Name>Cecs475.BoardGames.Othello.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.Othello.View\Cecs475.BoardGames.Othello.View.csproj">
-      <Project>{103ea8f6-8a13-4f8c-8747-92c86f3759b0}</Project>
-      <Name>Cecs475.BoardGames.Othello.View</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.TicTacToe.Model\Cecs475.BoardGames.TicTacToe.Model.csproj">
-      <Project>{86d454b1-0ef0-4ed3-8f5b-f6c139d52a9c}</Project>
-      <Name>Cecs475.BoardGames.TicTacToe.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Cecs475.BoardGames.TicTacToe.View\Cecs475.BoardGames.TicTacToe.View.csproj">
-      <Project>{8b69e987-cc12-47cf-82b0-87d608aa69f3}</Project>
-      <Name>Cecs475.BoardGames.TicTacToe.View</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cecs475.BoardGames.View\Cecs475.BoardGames.View.csproj">
       <Project>{0D64FDCE-18D4-41CF-BBF8-ACF449086045}</Project>
