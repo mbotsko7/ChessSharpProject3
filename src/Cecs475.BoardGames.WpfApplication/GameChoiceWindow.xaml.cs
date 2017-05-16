@@ -51,7 +51,7 @@ namespace Cecs475.BoardGames.WpfApplication {
                     }
                 }
             }*/
-            Application.Current.Resources["ItemsSource"] = boardTypes;
+            Application.Current.Resources["GameTypes"] = boardTypes;
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
