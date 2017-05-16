@@ -22,19 +22,21 @@ namespace Cecs475.BoardGames.WpfApplication {
 		public GameChoiceWindow() {
 			InitializeComponent();
             Type gameType = typeof(IGameType);
-            //Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.Model.dll");
-            //Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.View.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.Model.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.View.dll");
             Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.Model.dll");
             Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.View.dll");
-            //Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.Model.dll");
-            //Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.View.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.Model.dll");
+            Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.View.dll");
             List<object> l = new List<object>();
             var boardTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
                 .Where(t => gameType.IsAssignableFrom(t) && t.IsClass);
             foreach(var val  in boardTypes)
             {
-                l.Add(Activator.CreateInstance(val));
+                Console.WriteLine("1");
+                IGameType v = (IGameType)val.GetConstructor(Type.EmptyTypes).Invoke(null);
+                l.Add(v);
             }
             /*foreach(var assemble in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -51,7 +53,7 @@ namespace Cecs475.BoardGames.WpfApplication {
                     }
                 }
             }*/
-            Application.Current.Resources["GameTypes"] = boardTypes;
+            Application.Current.Resources["GameTypes"] = l;
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
