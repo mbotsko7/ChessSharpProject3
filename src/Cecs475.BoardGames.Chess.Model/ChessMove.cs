@@ -91,6 +91,18 @@ namespace Cecs475.BoardGames.Chess {
             return Equals(obj as ChessMove);
         }
 
+        public override int GetHashCode() {
+            unchecked {
+                var hashCode = StartPosition.GetHashCode();
+                hashCode = (hashCode * 397) ^ EndPosition.GetHashCode();
+                hashCode = (hashCode * 397) ^ Piece.GetHashCode();
+                hashCode = (hashCode * 397) ^ Captured.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) MoveType;
+                return hashCode;
+            }
+        }
+
+
         /// <summary>
         /// The starting position of the move.
         /// </summary>

@@ -21,21 +21,119 @@ namespace Cecs475.BoardGames.Chess {
             {2, 4, 5, 6, 7, 5, 4, 3}
         };
 
-        public bool IsFinished
-        {
-            get
-            {
-                return IsCheckmate || IsStalemate;
-            }
-        }
+        public bool IsFinished => IsCheckmate || IsStalemate;
 
-        public int Weight
-        {
-            get; private set;
+        public int Weight {
+            get {
+                int white = 0;
+                int black = 0;
+
+                // Count spaces each pawn has moved forward
+                foreach (var gameMove in MoveHistory) {
+                    var move = gameMove as ChessMove;
+
+                    switch (move?.Piece.PieceType) {
+                        case ChessPieceType.Pawn:
+                            if (move.Piece.Player == 1) {
+                                white += Math.Abs(move.StartPosition.Row - move.EndPosition.Row);
+                            } else {
+                                black += Math.Abs(move.StartPosition.Row - move.EndPosition.Row);
+                            }
+                            break;
+                    }
+                }
+
+                var white3PointPieces = new List<BoardPosition>();
+                var black3PointPieces = new List<BoardPosition>();
+               
+                for (var row = 0; row < BOARD_SIZE; row++) {
+                    for (var col = 0; col < BOARD_SIZE; col++) {
+                        if (Math.Abs(mBoard[row, col]) == 3) {
+                            if (mBoard[row, col] > 0) {
+                                white3PointPieces.Add(new BoardPosition(row, col));
+                            } else {
+                                black3PointPieces.Add(new BoardPosition(row, col));
+                            }
+                        }
+                    }
+                }
+
+                // Check each position and get the threatened spaces for knights and bishops
+                for (var row = 0; row < BOARD_SIZE; row++) {
+                    for (var col = 0; col < BOARD_SIZE; col++) {
+                        if (mBoard[row, col] > 0) {
+                            // Points for ownership
+                            white += mBoard[row, col];
+
+                            var threatened = GetPiecesThreatenedFrom(new BoardPosition(row, col)) as List<BoardPosition>;
+
+                            // Points for each knight and bishop protected
+                            white += threatened.Union(white3PointPieces).Count();
+
+                            foreach (var boardPosition in threatened) {
+                                if (mBoard[boardPosition.Row, boardPosition.Col] >= 0) continue;
+                                
+                                // Points for each type of enemy threatened
+                                switch (GetPieceAtPosition(boardPosition).PieceType) {
+                                    case ChessPieceType.RookQueen:
+                                    case ChessPieceType.RookKing:
+                                    case ChessPieceType.RookPawn:
+                                        white += 2;
+                                        break;
+                                    case ChessPieceType.Knight:
+                                    case ChessPieceType.Bishop:
+                                        white += 1;
+                                        break;
+                                    case ChessPieceType.Queen:
+                                        white += 5;
+                                        break;
+                                    case ChessPieceType.King:
+                                        white += 4;
+                                        break;
+                                }
+                            }
+                        } else if (mBoard[row, col] < 0) {
+                            // Points for ownership
+                            black += mBoard[row, col] * -1;
+
+                            var threatened = GetPiecesThreatenedFrom(new BoardPosition(row, col)) as List<BoardPosition>;
+
+                            // Points for each knight and bishop protected
+                            black += threatened.Union(black3PointPieces).Count();
+
+                            foreach (var boardPosition in threatened) {
+                                if (mBoard[boardPosition.Row, boardPosition.Col] <= 0) continue;
+                                
+                                // Points for each type of enemy threatened
+                                switch (GetPieceAtPosition(boardPosition).PieceType) {
+                                    case ChessPieceType.RookQueen:
+                                    case ChessPieceType.RookKing:
+                                    case ChessPieceType.RookPawn:
+                                        black += 2;
+                                        break;
+                                    case ChessPieceType.Knight:
+                                    case ChessPieceType.Bishop:
+                                        black += 1;
+                                        break;
+                                    case ChessPieceType.Queen:
+                                        black += 5;
+                                        break;
+                                    case ChessPieceType.King:
+                                        black += 4;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return white - black;
+            }
         }
 
         // Game states
         public bool NeedToPawnPromote;
+
         private int _blackKingFirstMove;
         private int _whiteKingFirstMove;
         private int _blackRookKingFirstMove;

@@ -51,7 +51,7 @@ namespace Cecs475.BoardGames.Chess.View {
                 square.IsHovered = false;
         }
 
-        private void Border_MouseUp(object sender, MouseButtonEventArgs e) {
+        private async void Border_MouseUp(object sender, MouseButtonEventArgs e) {
             var border = sender as Border;
             var square = border?.DataContext as ChessSquare;
 
@@ -73,7 +73,7 @@ namespace Cecs475.BoardGames.Chess.View {
             }
 
             // Otherwise, apply the move and clear any other flags
-            Model.ApplyMove(square.Position);
+            await Model.ApplyMove(square.Position);
             square.IsHovered = false;
             selectedPiece.IsSelected = false;
         }

@@ -6,9 +6,11 @@ using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using Cecs475.BoardGames.ComputerOpponent;
 
 namespace Cecs475.BoardGames.Chess.View {
     public class ChessViewModel : IGameViewModel {
@@ -42,9 +44,10 @@ namespace Cecs475.BoardGames.Chess.View {
         public int CurrentPlayer => _board.CurrentPlayer;
 
         public NumberOfPlayers Players { get; set; }
+        private readonly IGameAi _ai = new MinimaxAi(2);
 
         public bool HasSelected => Squares.Any(s => s.IsSelected);
-        
+
         public ObservableCollection<ChessSquare> Squares { get; }
 
         public HashSet<BoardPosition> PossibleMoves => new HashSet<BoardPosition>(
@@ -77,7 +80,7 @@ namespace Cecs475.BoardGames.Chess.View {
             OnPropertyChanged(nameof(CanUndo));
         }
 
-        public void ApplyMove(BoardPosition squarePosition) {
+        public async Task ApplyMove(BoardPosition squarePosition) {
             var possibleMoves = _board.GetPossibleMoves() as IEnumerable<ChessMove>;
             var selectedPiece = Squares.FirstOrDefault(s => s.IsSelected);
 
@@ -101,7 +104,29 @@ namespace Cecs475.BoardGames.Chess.View {
                 possibleMoves = _board.GetPossibleMoves() as IEnumerable<ChessMove>;
                 _board.ApplyMove(possibleMoves?.FirstOrDefault(move => move.ToString().Contains(dialog.Piece)));
             }
-            
+
+            RebindState();
+
+            if (Players == NumberOfPlayers.One && !_board.IsFinished) {
+                var bestMove = await Task.Run(() => _ai.FindBestMove(_board));
+
+                if (bestMove != null) {
+                    _board.ApplyMove(bestMove);
+
+                    if (_board.NeedToPawnPromote) {
+                        bestMove = await Task.Run(() => _ai.FindBestMove(_board));
+
+                        if (bestMove != null) {
+                            _board.ApplyMove(bestMove);
+                        }
+                    }
+                }
+            }
+
+            RebindState();
+        }
+
+        private void RebindState() {
             foreach (var chessSquare in Squares) {
                 chessSquare.Piece = _board.GetPieceAtPosition(chessSquare.Position);
                 if (_board.IsCheck && chessSquare.Piece.Player == CurrentPlayer &&
@@ -128,8 +153,6 @@ namespace Cecs475.BoardGames.Chess.View {
         private bool _isInCheck;
 
         public event PropertyChangedEventHandler PropertyChanged;
-       
-           
 
         public ChessPiecePosition Piece {
             get => _piece;
@@ -139,11 +162,9 @@ namespace Cecs475.BoardGames.Chess.View {
                 _piece = value;
                 OnPropertyChanged(nameof(Piece));
             }
-         }
+        }
 
-            
-
-    public bool IsHovered {
+        public bool IsHovered {
             get => _isHovered;
             set {
                 if (value == _isHovered) return;
