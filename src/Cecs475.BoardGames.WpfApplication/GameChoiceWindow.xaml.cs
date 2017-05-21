@@ -20,7 +20,10 @@ namespace Cecs475.BoardGames.WpfApplication {
 	/// </summary>
 	public partial class GameChoiceWindow : Window {
 		public GameChoiceWindow() {
-			InitializeComponent();
+            var x = DownloadGames();
+            InitializeComponent();
+            
+            //await x;
             Type gameType = typeof(IGameType);
             Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.Model.dll");
             Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.View.dll");
@@ -34,7 +37,7 @@ namespace Cecs475.BoardGames.WpfApplication {
                 .Where(t => gameType.IsAssignableFrom(t) && t.IsClass);
             foreach(var val  in boardTypes)
             {
-                Console.WriteLine("1");
+                //Console.WriteLine("1");
                 IGameType v = (IGameType)val.GetConstructor(Type.EmptyTypes).Invoke(null);
                 l.Add(v);
             }
@@ -72,5 +75,12 @@ namespace Cecs475.BoardGames.WpfApplication {
 		private void GameWindow_Closed(object sender, EventArgs e) {
 			this.Show();
 		}
+
+        public Boolean DownloadGames()
+        {
+            var loadwindow = new Loading();
+            loadwindow.Close();
+            return true;
+        }
 	}
 }

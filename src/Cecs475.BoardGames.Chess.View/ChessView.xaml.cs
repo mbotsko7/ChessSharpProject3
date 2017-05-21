@@ -27,6 +27,8 @@ namespace Cecs475.BoardGames.Chess.View {
         public ChessViewModel Model => FindResource("ViewModel") as ChessViewModel;
 
         private void Border_MouseEnter(object sender, MouseEventArgs e) {
+            if (Model.Players == BoardGames.View.NumberOfPlayers.One && Model.CurrentPlayer == 2)
+                return;
             var border = sender as Border;
             var square = border?.DataContext as ChessSquare;
 
@@ -43,7 +45,11 @@ namespace Cecs475.BoardGames.Chess.View {
             }
         }
 
-        private void Border_MouseLeave(object sender, MouseEventArgs e) {
+        
+
+    private void Border_MouseLeave(object sender, MouseEventArgs e) {
+            if (Model.Players == BoardGames.View.NumberOfPlayers.One && Model.CurrentPlayer == 2)
+                return;
             var border = sender as Border;
 
             var square = border?.DataContext as ChessSquare;
@@ -52,6 +58,8 @@ namespace Cecs475.BoardGames.Chess.View {
         }
 
         private async void Border_MouseUp(object sender, MouseButtonEventArgs e) {
+            if (Model.Players == BoardGames.View.NumberOfPlayers.One && Model.CurrentPlayer == 2)
+                return;
             var border = sender as Border;
             var square = border?.DataContext as ChessSquare;
 
