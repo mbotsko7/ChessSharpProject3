@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RestSharp;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace Cecs475.BoardGames.WpfApplication
 {
@@ -29,7 +31,16 @@ namespace Cecs475.BoardGames.WpfApplication
             
             
         }
-
+        public string cleanse(string str)
+        {
+            str = str.Trim();
+            str = str.Replace("\r", "");
+            str = str.Replace("\n", "");
+            str = str.Replace(@"\", "");
+            str = str.Replace("\"", "");
+            
+            return str;
+        }
         public async void WindowLoad(object sender, RoutedEventArgs x)
         {
             var client = new RestClient("http://cecs475-boardgames.azurewebsites.net/");
@@ -43,21 +54,39 @@ namespace Cecs475.BoardGames.WpfApplication
             else
             {
                 //request = new RestRequest("api/register", Method.POST);
-                var r = response.Content;
+                string r = response.Content;
                 r = r.Substring(1);
                 r = r.Substring(0, r.Length - 1);
-                Console.Write(r);
                 var obj = JObject.Parse(r);
-                foreach(var child in obj.Children())
+                JToken results = obj.First;
+                results = obj.Last.First;
+                List<string> strList = new List<string>();
+                List<JToken> things = new List<JToken>() { results.First, results.Last };
+                foreach(JToken t in things)
                 {
-                    
-                    var list = child.ToList();
-                    for (int i = 0; i < list.Count(); i++) {
-                        string val = list.ElementAt(i).ToString();
-                        
+                    JToken token = t.First;
+                    do
+                    {
+                        strList.Add(token.First.ToObject<string>());
+                        token = token.Next;
+                    }
+                    while (token != null);
+                }
+                for (int i = 0; i < strList.Count(); i++)
+                {
+                    string val = strList.ElementAt(i);
+                    if (val.Contains("https"))
+                    {
+                        var web = new WebClient();
+                        var mTask = web.DownloadFileTaskAsync(val, "lib/"+strList.ElementAt(i-1));
+                        await mTask;
                     }
                 }
             }
+            
         }
+
     }
+
+    
 }
