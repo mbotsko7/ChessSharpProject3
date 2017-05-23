@@ -21,10 +21,8 @@ namespace Cecs475.BoardGames.WpfApplication {
 	/// </summary>
 	public partial class GameChoiceWindow : Window {
 		public GameChoiceWindow() {
-            var x = DownloadGames();
             InitializeComponent();
             
-            //await x;
             Type gameType = typeof(IGameType);
             var files = Directory.GetFiles("lib");
             foreach(var f in Directory.GetFiles("lib"))
@@ -32,7 +30,8 @@ namespace Cecs475.BoardGames.WpfApplication {
                 Console.WriteLine(f);
                 string file = f.Substring(4);
                 file = file.Substring(0, file.Length - 4);
-                Assembly.Load($"lib\\{file}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=68e71c13048d452a");
+                Assembly.Load($"{file}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=68e71c13048d452a");
+                //Assembly.Load($"{f.Substring(0,f.Length-4)}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=68e71c13048d452a");
             }
             List<object> l = new List<object>();
             var boardTypes = AppDomain.CurrentDomain.GetAssemblies()
@@ -79,11 +78,11 @@ namespace Cecs475.BoardGames.WpfApplication {
 			this.Show();
 		}
 
-        public Boolean DownloadGames()
+        public async Task DownloadGames()
         {
             var loadwindow = new Loading();
             loadwindow.Close();
-            return true;
+            
         }
 	}
 }

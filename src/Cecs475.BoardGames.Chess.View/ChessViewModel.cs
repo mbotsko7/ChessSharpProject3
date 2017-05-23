@@ -123,7 +123,7 @@ namespace Cecs475.BoardGames.Chess.View {
                 }
             }
 
-            RebindState();
+            //RebindState();
         }
 
         private void RebindState() {

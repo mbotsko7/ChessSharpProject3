@@ -63,7 +63,7 @@ namespace Cecs475.BoardGames.ComputerOpponent {
                             Move = possibleMove
                         };
                     }
-
+                    
                     if (nextBestMove.Weight <= alpha) continue;
 
                     bestMove = possibleMove;
