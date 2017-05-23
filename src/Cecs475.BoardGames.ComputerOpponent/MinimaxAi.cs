@@ -57,7 +57,6 @@ namespace Cecs475.BoardGames.ComputerOpponent {
                 if (maximize) {
                     // i.e. alpha became > beta, so return this
                     if (nextBestMove.Weight >= beta) {
-                        Debug.WriteLine($"depth-{depthLeft}:pruning");
                         return new MinimaxBestMove {
                             Weight = beta,
                             Move = possibleMove
@@ -71,7 +70,6 @@ namespace Cecs475.BoardGames.ComputerOpponent {
                 } else {
                     // i.e. beta became < alpha, so return this
                     if (nextBestMove.Weight <= alpha) {
-                        Debug.WriteLine($"depth-{depthLeft}:pruning");
                         return new MinimaxBestMove {
                             Weight = alpha,
                             Move = possibleMove
@@ -84,8 +82,6 @@ namespace Cecs475.BoardGames.ComputerOpponent {
                     beta = nextBestMove.Weight;
                 }
             }
-
-            Debug.WriteLine($"Made a move at depth {depthLeft}: {bestMove}");
             return new MinimaxBestMove {
                 Move = bestMove,
                 Weight = maximize ? alpha : beta

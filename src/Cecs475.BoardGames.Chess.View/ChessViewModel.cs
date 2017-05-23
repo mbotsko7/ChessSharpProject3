@@ -41,10 +41,10 @@ namespace Cecs475.BoardGames.Chess.View {
 
         public int BoardValue => _board.Value;
 
-        public int CurrentPlayer => _board.CurrentPlayer;
+        public int CurrentPlayer => 0 + _board.CurrentPlayer;
 
         public NumberOfPlayers Players { get; set; }
-        private readonly IGameAi _ai = new MinimaxAi(2);
+        private readonly IGameAi _ai = new MinimaxAi(6);
 
         public bool HasSelected => Squares.Any(s => s.IsSelected);
 
@@ -65,19 +65,13 @@ namespace Cecs475.BoardGames.Chess.View {
             if (_board.NeedToPawnPromote)
                 _board.UndoLastMove();
 
-            foreach (var chessSquare in Squares) {
-                chessSquare.Piece = _board.GetPieceAtPosition(chessSquare.Position);
-                if (_board.IsCheck && chessSquare.Piece.Player == CurrentPlayer &&
-                    chessSquare.Piece.PieceType == ChessPieceType.King)
-                    chessSquare.IsInCheck = true;
-                else if (!_board.IsCheck)
-                    chessSquare.IsInCheck = false;
+            // In one-player mode, Undo has to remove an additional move to return to the
+            // human player's turn.
+            if (Players == NumberOfPlayers.One) {
+                _board.UndoLastMove();
             }
 
-            OnPropertyChanged(nameof(BoardValue));
-            OnPropertyChanged(nameof(Squares));
-            OnPropertyChanged(nameof(CurrentPlayer));
-            OnPropertyChanged(nameof(CanUndo));
+            RebindState();
         }
 
         public async Task ApplyMove(BoardPosition squarePosition) {
@@ -107,13 +101,16 @@ namespace Cecs475.BoardGames.Chess.View {
 
             RebindState();
 
+            Debug.WriteLine("ai turn: " + _board.MoveHistory.Count);
             if (Players == NumberOfPlayers.One && !_board.IsFinished) {
+                Debug.WriteLine("making move");
                 var bestMove = await Task.Run(() => _ai.FindBestMove(_board));
 
                 if (bestMove != null) {
                     _board.ApplyMove(bestMove);
 
                     if (_board.NeedToPawnPromote) {
+                        Debug.WriteLine("promoting pawn");
                         bestMove = await Task.Run(() => _ai.FindBestMove(_board));
 
                         if (bestMove != null) {
@@ -127,6 +124,8 @@ namespace Cecs475.BoardGames.Chess.View {
         }
 
         private void RebindState() {
+            var possibleMoves = PossibleMoves;
+
             foreach (var chessSquare in Squares) {
                 chessSquare.Piece = _board.GetPieceAtPosition(chessSquare.Position);
                 if (_board.IsCheck && chessSquare.Piece.Player == CurrentPlayer &&
