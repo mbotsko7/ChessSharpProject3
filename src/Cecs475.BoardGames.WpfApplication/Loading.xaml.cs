@@ -15,6 +15,7 @@ using RestSharp;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Cecs475.BoardGames.WpfApplication
 {
@@ -25,9 +26,10 @@ namespace Cecs475.BoardGames.WpfApplication
     {
         public Loading()
         {
+            
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(WindowLoad);
-            this.Show();
+            
             
             
         }
@@ -79,10 +81,15 @@ namespace Cecs475.BoardGames.WpfApplication
                     {
                         var web = new WebClient();
                         var mTask = web.DownloadFileTaskAsync(val, "lib/"+strList.ElementAt(i-1));
+                        
                         await mTask;
+                        
                     }
                 }
             }
+            var win = new GameChoiceWindow();
+            this.Close();
+            win.Show();
             
         }
 

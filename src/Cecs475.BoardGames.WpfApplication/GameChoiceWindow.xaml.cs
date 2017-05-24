@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace Cecs475.BoardGames.WpfApplication {
 	/// <summary>
@@ -20,17 +21,18 @@ namespace Cecs475.BoardGames.WpfApplication {
 	/// </summary>
 	public partial class GameChoiceWindow : Window {
 		public GameChoiceWindow() {
-            var x = DownloadGames();
             InitializeComponent();
             
-            //await x;
             Type gameType = typeof(IGameType);
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.Model.dll");
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.Chess.View.dll");
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.Model.dll");
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.Othello.View.dll");
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.Model.dll");
-            Assembly.LoadFrom("lib/Cecs475.BoardGames.TicTacToe.View.dll");
+            var files = Directory.GetFiles("lib");
+            foreach(var f in Directory.GetFiles("lib"))
+            {
+                Console.WriteLine(f);
+                string file = f.Substring(4);
+                file = file.Substring(0, file.Length - 4);
+                Assembly.Load($"{file}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=68e71c13048d452a");
+                //Assembly.Load($"{f.Substring(0,f.Length-4)}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=68e71c13048d452a");
+            }
             List<object> l = new List<object>();
             var boardTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
@@ -76,11 +78,11 @@ namespace Cecs475.BoardGames.WpfApplication {
 			this.Show();
 		}
 
-        public Boolean DownloadGames()
+        public async Task DownloadGames()
         {
             var loadwindow = new Loading();
             loadwindow.Close();
-            return true;
+            
         }
 	}
 }
