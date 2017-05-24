@@ -67,23 +67,44 @@ namespace Cecs475.BoardGames.Chess.View {
             if (square == null || Model == null) return;
 
             var selectedPiece = Model.Squares.FirstOrDefault(s => s.IsSelected);
-         
-            // Highlight if no piece or a different piece is selected
-            if (square.Piece.Player == Model.CurrentPlayer) {
-                square.IsSelected = square != selectedPiece;
-            } else {
-                if (!square.IsHovered)
-                    return;
 
-                square.IsHovered = true;
-                IsEnabled = false;
-                await Model.ApplyMove(square.Position);
-                IsEnabled = true;
-                square.IsHovered = false;
+            // Highlight if no piece or a different piece is selected
+            if (square.Piece.Player == Model.CurrentPlayer && square != selectedPiece)
+                square.IsSelected = true;
+
+            if (selectedPiece == null)
+                return;
+
+            // If the move is invalid, we're done
+            if (!square.IsHovered) {
+                selectedPiece.IsSelected = false;
+                return;
             }
 
-            if (selectedPiece != null) 
-                selectedPiece.IsSelected = false;
+            // Otherwise, apply the move and clear any other flags
+            IsEnabled = false;
+            await Model.ApplyMove(square.Position);
+            IsEnabled = true; // this was at the bottom, pretty sure it should be after apply move
+            square.IsHovered = false;
+            selectedPiece.IsSelected = false;
+
+            // Code below may be safer but doesn't work - moves are not made
+            // Highlight if no piece or a different piece is selected
+//            if (square.Piece.Player == Model.CurrentPlayer) {
+//                square.IsSelected = square != selectedPiece;
+//            } else {
+//                if (!square.IsHovered)
+//                    return;
+//
+//                square.IsHovered = true;
+//                IsEnabled = false;
+//                await Model.ApplyMove(square.Position);
+//                IsEnabled = true;
+//                square.IsHovered = false;
+//            }
+//
+//            if (selectedPiece != null) 
+//                selectedPiece.IsSelected = false;
         }
     }
 }

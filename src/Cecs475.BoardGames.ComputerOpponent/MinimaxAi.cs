@@ -53,7 +53,7 @@ namespace Cecs475.BoardGames.ComputerOpponent {
                 b.ApplyMove(possibleMove);
                 var nextBestMove = FindBestMove(b, depthLeft - 1, !maximize, alpha, beta);
                 b.UndoLastMove();
-
+               
                 if (maximize) {
                     // i.e. alpha became > beta, so return this
                     if (nextBestMove.Weight >= beta) {

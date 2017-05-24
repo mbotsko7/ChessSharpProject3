@@ -42,7 +42,6 @@ namespace Cecs475.BoardGames.Chess.View {
     public class ChessValueConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             int boardValue = (int) value;
-            Debug.WriteLine(value.ToString());
             if (boardValue == 0)
                 return "Tie game.";
             return  $"{(boardValue > 0 ? "White" : "Black")} has a +{Math.Abs(boardValue)} advantage.";

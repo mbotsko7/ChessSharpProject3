@@ -82,7 +82,6 @@ namespace Cecs475.BoardGames.WpfApplication {
         {
             var loadwindow = new Loading();
             loadwindow.Close();
-            
         }
 	}
 }

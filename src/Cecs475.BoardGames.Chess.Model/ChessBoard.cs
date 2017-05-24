@@ -32,6 +32,9 @@ namespace Cecs475.BoardGames.Chess {
                     return CurrentPlayer == 1 ? int.MaxValue : int.MinValue;
                 }
 
+                if (IsStalemate)
+                    return 0;
+
                 // Count spaces each pawn has moved forward
                 foreach (var gameMove in MoveHistory) {
                     var move = gameMove as ChessMove;
@@ -360,7 +363,6 @@ namespace Cecs475.BoardGames.Chess {
 
                     // Clear the old rook position
                     mBoard[aMove.EndPosition.Row, aMove.EndPosition.Col + 1] = 0;
-
                     // Set flags
                     if (CurrentPlayer == 1) {
                         _whiteKingFirstMove = MoveHistory.Count + 1;
@@ -412,7 +414,7 @@ namespace Cecs475.BoardGames.Chess {
             // Remove the pawn promotion and undo the move before it
             if (move.MoveType == ChessMoveType.PawnPromote) {
                 // Remove the pawn promote
-                MoveHistory.RemoveAt(MoveHistory.IndexOf(move));
+                MoveHistory.RemoveAt(MoveHistory.Count - 1);
 
                 // Replace position with a pawn
                 mBoard[move.StartPosition.Row, move.StartPosition.Col] =
@@ -430,7 +432,7 @@ namespace Cecs475.BoardGames.Chess {
             mBoard[move.EndPosition.Row, move.EndPosition.Col] = (sbyte) ChessPieceType.Empty;
 
             // Update our other members
-            MoveHistory.RemoveAt(MoveHistory.IndexOf(move));
+            MoveHistory.RemoveAt(MoveHistory.Count - 1);
 
             // Replace the piece at the starting location
             mBoard[move.StartPosition.Row, move.StartPosition.Col] =

@@ -44,7 +44,7 @@ namespace Cecs475.BoardGames.Chess.View {
         public int CurrentPlayer => 0 + _board.CurrentPlayer;
 
         public NumberOfPlayers Players { get; set; }
-        private readonly IGameAi _ai = new MinimaxAi(6);
+        private readonly IGameAi _ai = new MinimaxAi(4);
 
         public bool HasSelected => Squares.Any(s => s.IsSelected);
 
@@ -99,14 +99,20 @@ namespace Cecs475.BoardGames.Chess.View {
                 _board.ApplyMove(possibleMoves?.FirstOrDefault(move => move.ToString().Contains(dialog.Piece)));
             }
 
+            Debug.WriteLine($"have: {_board.MoveHistory.Count}");
             RebindState();
+            Debug.WriteLine($"have: {_board.MoveHistory.Count}");
+            Debug.WriteLine("player moved");
 
-            Debug.WriteLine("ai turn: " + _board.MoveHistory.Count);
             if (Players == NumberOfPlayers.One && !_board.IsFinished) {
                 Debug.WriteLine("making move");
+                var test = _board.CurrentPlayer;
                 var bestMove = await Task.Run(() => _ai.FindBestMove(_board));
+                Debug.WriteLine($"{test}-{_board.CurrentPlayer}");
 
                 if (bestMove != null) {
+                    Debug.WriteLine($"{bestMove}");
+                    Debug.WriteLine("test");
                     _board.ApplyMove(bestMove);
 
                     if (_board.NeedToPawnPromote) {
@@ -120,7 +126,10 @@ namespace Cecs475.BoardGames.Chess.View {
                 }
             }
 
+            Debug.WriteLine($"have: {_board.MoveHistory.Count}");
             RebindState();
+            Debug.WriteLine($"have: {_board.MoveHistory.Count}");
+            Debug.WriteLine("ai moved");
         }
 
         private void RebindState() {
