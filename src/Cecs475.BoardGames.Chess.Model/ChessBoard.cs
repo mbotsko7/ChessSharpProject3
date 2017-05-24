@@ -289,10 +289,6 @@ namespace Cecs475.BoardGames.Chess {
             // Set it at the end position
             if (aMove.MoveType != ChessMoveType.PawnPromote) {
                 // Record the captured piece, if any
-                if (MoveHistory.Count >= 7) {
-                    Debug.WriteLine(aMove);
-                    Debug.WriteLine(MoveHistory[6]);
-                }
                 aMove.Captured = GetPieceAtPosition(aMove.EndPosition);
                 
                 mBoard[aMove.EndPosition.Row, aMove.EndPosition.Col] =
