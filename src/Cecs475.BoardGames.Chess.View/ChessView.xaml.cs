@@ -68,6 +68,11 @@ namespace Cecs475.BoardGames.Chess.View {
 
             var selectedPiece = Model.Squares.FirstOrDefault(s => s.IsSelected);
 
+            if (square == selectedPiece) {
+                selectedPiece.IsSelected = false;
+                return;
+            }
+
             // Highlight if no piece or a different piece is selected
             if (square.Piece.Player == Model.CurrentPlayer && square != selectedPiece)
                 square.IsSelected = true;

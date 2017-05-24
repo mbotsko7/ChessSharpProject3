@@ -620,6 +620,7 @@ namespace Cecs475.BoardGames.Chess {
 
                                 // If it's the pawn's first move it can move up two spaces
                                 if (((CurrentPlayer == 1 && row == 6) || (CurrentPlayer == 2 && row == 1)) &&
+                                    GetPieceAtPosition(forwardOne).PieceType == ChessPieceType.Empty &&
                                     GetPieceAtPosition(forwardTwo).PieceType == ChessPieceType.Empty)
                                     pawnMoves.Add(
                                         new ChessMove(currentPosition, currentPosition.Translate(dRow * 2, 0)));
