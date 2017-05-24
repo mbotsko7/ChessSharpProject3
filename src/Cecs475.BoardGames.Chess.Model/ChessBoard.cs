@@ -28,6 +28,10 @@ namespace Cecs475.BoardGames.Chess {
                 int white = 0;
                 int black = 0;
 
+                if (IsFinished) {
+                    return CurrentPlayer == 1 ? int.MaxValue : int.MinValue;
+                }
+
                 // Count spaces each pawn has moved forward
                 foreach (var gameMove in MoveHistory) {
                     var move = gameMove as ChessMove;
