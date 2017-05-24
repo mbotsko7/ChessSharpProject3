@@ -56,7 +56,15 @@ namespace Cecs475.BoardGames.Chess.View {
             select move.EndPosition
         );
 
-        public bool CanUndo => _board.MoveHistory.Count > 0;
+        public bool CanUndo => _board.MoveHistory.Count > 0 && !(Players == NumberOfPlayers.One && CurrentPlayer == 2);
+        /*public bool CanUndo()
+        {
+            if(_board.MoveHistory.Count > 0 && !(Players == NumberOfPlayers.One && CurrentPlayer == 2))
+            {
+                return true;   
+            }
+            return false;
+        */
 
         public void UndoMove() {
             if (!CanUndo) return;
