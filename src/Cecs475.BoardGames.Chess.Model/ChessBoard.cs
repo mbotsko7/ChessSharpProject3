@@ -285,11 +285,16 @@ namespace Cecs475.BoardGames.Chess {
 
             // Remove the piece from its starting position
             mBoard[aMove.StartPosition.Row, aMove.StartPosition.Col] = 0;
-
+            
             // Set it at the end position
             if (aMove.MoveType != ChessMoveType.PawnPromote) {
                 // Record the captured piece, if any
+                if (MoveHistory.Count >= 7) {
+                    Debug.WriteLine(aMove);
+                    Debug.WriteLine(MoveHistory[6]);
+                }
                 aMove.Captured = GetPieceAtPosition(aMove.EndPosition);
+                
                 mBoard[aMove.EndPosition.Row, aMove.EndPosition.Col] =
                     (sbyte) ((int) aMove.Piece.PieceType * Orientation);
             }
@@ -307,16 +312,16 @@ namespace Cecs475.BoardGames.Chess {
                             }
                             break;
                         case ChessPieceType.RookQueen:
-                            if (CurrentPlayer == 1) {
+                            if (CurrentPlayer == 1 && _blackRookQueenFirstMove == -1) {
                                 _whiteRookQueenFirstMove = MoveHistory.Count + 1;
-                            } else {
+                            } else if (CurrentPlayer == 2 && _blackRookQueenFirstMove == -1) {
                                 _blackRookQueenFirstMove = MoveHistory.Count + 1;
                             }
                             break;
                         case ChessPieceType.RookKing:
-                            if (CurrentPlayer == 1) {
+                            if (CurrentPlayer == 1 && _whiteRookKingFirstMove == -1) {
                                 _whiteRookKingFirstMove = MoveHistory.Count + 1;
-                            } else {
+                            } else if (CurrentPlayer == 2 && _blackRookKingFirstMove == -1) {
                                 _blackRookKingFirstMove = MoveHistory.Count + 1;
                             }
                             break;
@@ -329,9 +334,9 @@ namespace Cecs475.BoardGames.Chess {
                         case ChessPieceType.Queen:
                             break;
                         case ChessPieceType.King:
-                            if (CurrentPlayer == 1) {
+                            if (CurrentPlayer == 1 && _whiteKingFirstMove == -1) {
                                 _whiteKingFirstMove = MoveHistory.Count + 1;
-                            } else {
+                            } else if (CurrentPlayer == 2 && _blackKingFirstMove == -1) {
                                 _blackKingFirstMove = MoveHistory.Count + 1;
                             }
                             break;
@@ -363,8 +368,10 @@ namespace Cecs475.BoardGames.Chess {
 
                     // Clear the old rook position
                     mBoard[aMove.EndPosition.Row, aMove.EndPosition.Col + 1] = 0;
+                    
+
                     // Set flags
-                    if (CurrentPlayer == 1) {
+                    if (aMove.Piece.Player == 1) {
                         _whiteKingFirstMove = MoveHistory.Count + 1;
                         _whiteRookKingFirstMove = MoveHistory.Count + 1;
                     } else {
